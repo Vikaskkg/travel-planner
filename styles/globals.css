@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --ink: #1a1612;
+  --paper: #faf8f4;
+  --paper2: #f3efe8;
+  --clay: #c4856a;
+  --clay-light: #f0ddd4;
+  --clay-dark: #8f5a44;
+  --sage: #6b8f71;
+  --sage-light: #ddeadf;
+  --amber: #d4a843;
+  --amber-light: #fdf3d8;
+  --slate: #4a5568;
+  --mist: #e8e4dd;
+  --border: rgba(26,22,18,0.12);
+  --shadow: 0 2px 16px rgba(26,22,18,0.08);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif;
+  line-height: 1.2;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--paper2); }
+::-webkit-scrollbar-thumb { background: var(--mist); border-radius: 3px; }
+
+/* Utility */
+.serif { font-family: 'Playfair Display', serif; }

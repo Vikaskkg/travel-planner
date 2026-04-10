@@ -1,0 +1,298 @@
+{
+  "city": "London",
+  "country": "UK",
+  "last_updated": "2025-01",
+  "notes": "Curated by local experts. Priority 1-10 (10=must include).",
+
+  "restaurants": [
+    {
+      "name": "Dishoom",
+      "cuisine": "Bombay cafe",
+      "price_tier": "mid-range",
+      "neighbourhood": "Shoreditch / King's Cross / Covent Garden",
+      "indoor": true,
+      "tags": ["local", "breakfast", "brunch", "history"],
+      "good_for": ["solo", "couple", "small group"],
+      "priority": 9,
+      "description": "Iconic Bombay-style cafe beloved by Londoners. Legendary bacon naan at breakfast.",
+      "must_try": "Bacon naan roll, black dal, house black chai",
+      "booking_tip": "Book weeks ahead or queue — the queue moves fast and is worth it"
+    },
+    {
+      "name": "St. John Restaurant",
+      "cuisine": "British nose-to-tail",
+      "price_tier": "comfort",
+      "neighbourhood": "Smithfield, EC1",
+      "indoor": true,
+      "tags": ["local", "heritage", "history", "offbeat"],
+      "good_for": ["couple", "solo"],
+      "priority": 8,
+      "description": "Fergus Henderson's legendary restaurant that invented nose-to-tail eating. A London institution since 1994.",
+      "must_try": "Bone marrow and parsley salad, Welsh rarebit",
+      "booking_tip": "Book at least a week ahead. The bar does walk-ins."
+    },
+    {
+      "name": "Bao Fitzrovia",
+      "cuisine": "Taiwanese",
+      "price_tier": "mid-range",
+      "neighbourhood": "Fitzrovia, W1",
+      "indoor": true,
+      "tags": ["street", "local", "offbeat"],
+      "good_for": ["solo", "couple", "small group"],
+      "priority": 8,
+      "description": "Tiny, minimalist Taiwanese bao spot with cult following. The classic pork bao is legendary.",
+      "must_try": "Classic bao, fried chicken bao, trotter nuggets",
+      "booking_tip": "No reservations — queue from opening or go at off-peak times (3-5pm)"
+    },
+    {
+      "name": "Maltby Street Market",
+      "cuisine": "Street food / market",
+      "price_tier": "budget",
+      "neighbourhood": "Bermondsey, SE1",
+      "indoor": false,
+      "tags": ["street", "markets", "local", "offbeat"],
+      "good_for": ["solo", "couple", "small group", "family"],
+      "priority": 9,
+      "description": "London's best-kept food market secret under the railway arches. Producers sell direct, no tourist markup.",
+      "must_try": "Anything from Monmouth Coffee, Kappacasein raclette, Neal's Yard cheese",
+      "booking_tip": "Saturday mornings 10am-5pm only. Cash and card both accepted."
+    },
+    {
+      "name": "Lyles",
+      "cuisine": "Modern British",
+      "price_tier": "comfort",
+      "neighbourhood": "Shoreditch, E1",
+      "indoor": true,
+      "tags": ["local", "art", "offbeat", "finedining"],
+      "good_for": ["couple", "solo"],
+      "priority": 7,
+      "description": "No-choice set menu lunch and dinner. James Lowe's cooking is some of London's most exciting. Michelin starred.",
+      "must_try": "Whatever is on the set menu — it changes daily",
+      "booking_tip": "Lunch is better value than dinner. Book 2-3 weeks ahead."
+    },
+    {
+      "name": "E. Pellici",
+      "cuisine": "Italian-British caff",
+      "price_tier": "budget",
+      "neighbourhood": "Bethnal Green, E2",
+      "indoor": true,
+      "tags": ["local", "street", "history", "offbeat", "cafes"],
+      "good_for": ["solo", "couple"],
+      "priority": 8,
+      "description": "Grade II listed 1946 caff run by the same family for 120 years. Full English next to Art Nouveau marquetry.",
+      "must_try": "Full English breakfast, bubble and squeak",
+      "booking_tip": "Cash only. Opens 7am, closes 4pm. Go for breakfast."
+    },
+    {
+      "name": "Smoking Goat",
+      "cuisine": "Thai BBQ",
+      "price_tier": "mid-range",
+      "neighbourhood": "Shoreditch, E1",
+      "indoor": true,
+      "tags": ["local", "street", "drinks", "offbeat"],
+      "good_for": ["couple", "small group"],
+      "priority": 7,
+      "description": "Buzzing Thai BBQ bar with natural wine and ferociously good food. A Shoreditch staple.",
+      "must_try": "Smoked fish sauce wings, crab fried rice",
+      "booking_tip": "Book ahead for dinner. Bar stools available walk-in."
+    },
+    {
+      "name": "Borough Market",
+      "cuisine": "Food market",
+      "price_tier": "mid-range",
+      "neighbourhood": "London Bridge, SE1",
+      "indoor": false,
+      "tags": ["markets", "local", "street", "history"],
+      "good_for": ["solo", "couple", "small group", "family"],
+      "priority": 9,
+      "description": "London's most famous food market, trading since the 13th century. Go early, go hungry.",
+      "must_try": "Raclette from Kappacasein, scotch egg from Scotchtails, bread from Bread Ahead",
+      "booking_tip": "Wednesday-Saturday. Saturday is busiest. Arrive before 10am for elbow room."
+    }
+  ],
+
+  "excursions": [
+    {
+      "name": "Columbia Road Flower Market",
+      "duration": "2 hours",
+      "price_tier": "free",
+      "neighbourhood": "Bethnal Green, E2",
+      "indoor": false,
+      "tags": ["markets", "offbeat", "art", "nature"],
+      "good_for": ["couple", "solo", "family"],
+      "priority": 9,
+      "description": "Sunday morning flower market on a Victorian street. Vendors shout, locals buy armfuls of flowers. Magical.",
+      "booking_tip": "Sundays only, 8am-3pm. Peak 9-11am. Go for the street atmosphere as much as the flowers."
+    },
+    {
+      "name": "Crossness Pumping Station",
+      "duration": "2-3 hours",
+      "price_tier": "budget",
+      "neighbourhood": "Thamesmead, SE2",
+      "indoor": true,
+      "tags": ["history", "architecture", "offbeat"],
+      "good_for": ["solo", "couple"],
+      "priority": 7,
+      "description": "Jaw-dropping Victorian cathedral of sewage engineering. Ornate cast iron inside a massive pump house. One of London's greatest hidden buildings.",
+      "booking_tip": "Open days only — check crossness.org.uk. Worth planning a trip around."
+    },
+    {
+      "name": "Parkland Walk",
+      "duration": "2 hours",
+      "price_tier": "free",
+      "neighbourhood": "Finsbury Park to Highgate",
+      "indoor": false,
+      "tags": ["nature", "offbeat", "sport"],
+      "good_for": ["solo", "couple", "family"],
+      "priority": 8,
+      "description": "London's longest local nature reserve, following a disused railway line through north London. Spriggan sculpture mid-route.",
+      "booking_tip": "Best April-October. Dog-friendly. Start at Finsbury Park end."
+    },
+    {
+      "name": "Dennis Severs' House",
+      "duration": "1.5 hours",
+      "price_tier": "mid-range",
+      "neighbourhood": "Spitalfields, E1",
+      "indoor": true,
+      "tags": ["history", "art", "offbeat", "architecture"],
+      "good_for": ["solo", "couple"],
+      "priority": 9,
+      "description": "A preserved 18th-century silk weaver's house where you explore rooms as if the family just stepped out. Completely silent. Utterly immersive.",
+      "booking_tip": "Book online at dennissevershouse.co.uk. Monday evenings are candlelit — unmissable."
+    },
+    {
+      "name": "Brixton Market & Brixton Village",
+      "duration": "2 hours",
+      "price_tier": "budget",
+      "neighbourhood": "Brixton, SW9",
+      "indoor": true,
+      "tags": ["markets", "local", "music", "street", "culture"],
+      "good_for": ["solo", "couple", "small group"],
+      "priority": 8,
+      "description": "Covered market arcade with Caribbean food stalls, independent restaurants, and record shops. The heartbeat of south London.",
+      "booking_tip": "Wednesday-Sunday. Lunch is the best time. Pop Records on the corner is a must."
+    },
+    {
+      "name": "Thames Path walk: Tower Bridge to Greenwich",
+      "duration": "3-4 hours",
+      "price_tier": "free",
+      "neighbourhood": "South Bank to Greenwich",
+      "indoor": false,
+      "tags": ["nature", "history", "architecture", "sport"],
+      "good_for": ["solo", "couple", "family"],
+      "priority": 8,
+      "description": "Walk the south bank of the Thames through Bermondsey, Rotherhithe, and Deptford to Greenwich. Passes through rarely-touristed working docklands.",
+      "booking_tip": "Do it eastbound so the wind is mostly behind you. Grab lunch in Deptford Market Yard."
+    },
+    {
+      "name": "Highgate Cemetery West",
+      "duration": "1 hour",
+      "price_tier": "budget",
+      "neighbourhood": "Highgate, N6",
+      "indoor": false,
+      "tags": ["history", "architecture", "offbeat", "nature"],
+      "good_for": ["solo", "couple"],
+      "priority": 7,
+      "description": "Guided tour through one of the Magnificent Seven Victorian cemeteries. Egyptian Avenue and the Circle of Lebanon are extraordinary.",
+      "booking_tip": "West side requires guided tour (worth it). Book at highgatecemetery.org."
+    }
+  ],
+
+  "hidden_gems": [
+    {
+      "name": "Leake Street Arches",
+      "neighbourhood": "Waterloo, SE1",
+      "description": "London's only legal graffiti tunnel under Waterloo station. Artists work here daily. Completely free and changes constantly."
+    },
+    {
+      "name": "God's Own Junkyard",
+      "neighbourhood": "Walthamstow, E17",
+      "description": "A warehouse crammed floor-to-ceiling with neon signs from films, shows, and defunct businesses. Free entry, deeply surreal."
+    },
+    {
+      "name": "Viktor Wynd Museum of Curiosities",
+      "neighbourhood": "Hackney, E8",
+      "description": "The most gloriously chaotic cabinet of curiosities in London. Two-headed animals, celebrity hair, Dodo bones, all in a tiny basement bar."
+    },
+    {
+      "name": "Bevis Marks Synagogue",
+      "neighbourhood": "City of London, EC3",
+      "description": "Britain's oldest synagogue (1701), unchanged since it was built. The candle-lit interior is breathtaking and almost no tourists visit."
+    },
+    {
+      "name": "The Walthamstow Wetlands",
+      "neighbourhood": "Walthamstow, E17",
+      "description": "Europe's largest urban wetland reserve — 10 Victorian reservoirs now a nature reserve 20 minutes from Liverpool Street. Completely free."
+    },
+    {
+      "name": "Bunhill Fields",
+      "neighbourhood": "Old Street, EC1",
+      "description": "A tiny historic burial ground where Daniel Defoe, William Blake, and John Bunyan are buried. Hidden in plain sight next to a busy junction."
+    }
+  ],
+
+  "markets": [
+    {
+      "name": "Maltby Street Market",
+      "days": "Saturday 10am-5pm, Sunday 11am-4pm",
+      "neighbourhood": "Bermondsey, SE1",
+      "description": "Best food market in London. Under railway arches, producer-direct, locals only vibe."
+    },
+    {
+      "name": "Columbia Road Flower Market",
+      "days": "Sunday 8am-3pm",
+      "neighbourhood": "Bethnal Green, E2",
+      "description": "Victorian flower market, all independent traders. Come for the atmosphere as much as the flowers."
+    },
+    {
+      "name": "Portobello Road Market",
+      "days": "Saturday (biggest), Mon-Fri (antiques)",
+      "neighbourhood": "Notting Hill, W11",
+      "description": "Antiques, vintage clothing, food stalls. Saturday is peak — go early or go late to avoid the crush."
+    },
+    {
+      "name": "Broadway Market",
+      "days": "Saturday 9am-5pm",
+      "neighbourhood": "London Fields, E8",
+      "description": "East London's favourite Saturday market. Artisan food, coffee, vintage. Very local crowd."
+    },
+    {
+      "name": "Brixton Market",
+      "days": "Monday-Saturday",
+      "neighbourhood": "Brixton, SW9",
+      "description": "Caribbean and African food, independent fashion, record shops. The soul of south London."
+    }
+  ],
+
+  "seasonal_notes": [
+    {
+      "label": "Winter (Dec-Feb)",
+      "months": [11, 0, 1],
+      "notes": "Short days (dark by 4pm), cold and often wet. Push museums, galleries, and warm indoor venues. Winter markets in December. Avoid outdoor activities in mornings — start later. Christmas lights in Carnaby Street and Oxford Street are worth seeing in December."
+    },
+    {
+      "label": "Spring (Mar-May)",
+      "months": [2, 3, 4],
+      "notes": "Best time to visit London. Mild, parks blooming. Chelsea Flower Show in May. Push park walks, outdoor markets, Parkland Walk. Cherry blossom in Kyoto Garden, Holland Park in late March."
+    },
+    {
+      "label": "Summer (Jun-Aug)",
+      "months": [5, 6, 7],
+      "notes": "Long days (light until 9:30pm), warm but unpredictable. Outdoor cinema at Somerset House in July-August. Notting Hill Carnival in August Bank Holiday. Busiest tourist season — book restaurants further ahead. Evenings are magical for riverside walks."
+    },
+    {
+      "label": "Autumn (Sep-Nov)",
+      "months": [8, 9, 10],
+      "notes": "Underrated season. Crowds thin after September, parks turn golden. Affordable and atmospheric. Frieze Art Fair in October. Bonfire Night (5th November) is spectacular in Victoria Park or Primrose Hill."
+    }
+  ],
+
+  "local_transport_tips": [
+    "Oyster card or contactless bank card — never buy paper tickets. Daily cap means unlimited travel after a threshold.",
+    "Night Tube runs Friday and Saturday nights on Central, Victoria, Jubilee, Northern, and Piccadilly lines.",
+    "Boris Bikes (Santander Cycles) are everywhere in Zone 1-2. First 30 minutes free with day pass.",
+    "Black cabs can be hailed anywhere. Uber works but local minicabs via the Bolt or Kapten app are cheaper.",
+    "The Elizabeth Line (Crossrail) is fast and modern — use it for east-west journeys.",
+    "Walking between most central attractions takes 15-25 minutes and is almost always faster than the tube for 1-2 stops."
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "city": "Paris",
+  "country": "France",
+  "last_updated": "2025-01",
+
+  "restaurants": [
+    {
+      "name": "Le Baratin",
+      "cuisine": "French bistro",
+      "price_tier": "mid-range",
+      "neighbourhood": "Belleville, 20e",
+      "indoor": true,
+      "tags": ["local", "offbeat", "finedining"],
+      "good_for": ["couple", "solo"],
+      "priority": 9,
+      "description": "Tiny zinc-bar bistro in Belleville beloved by chefs on days off. Raquel Carena's cooking is exceptional.",
+      "must_try": "Whatever the blackboard says. The wine list is extraordinary.",
+      "booking_tip": "Book weeks ahead. Lunch only on weekdays."
+    },
+    {
+      "name": "Du Pain et des Idées",
+      "cuisine": "Boulangerie",
+      "price_tier": "budget",
+      "neighbourhood": "Canal Saint-Martin, 10e",
+      "indoor": false,
+      "tags": ["local", "street", "cafes", "offbeat"],
+      "good_for": ["solo", "couple", "family"],
+      "priority": 9,
+      "description": "Paris's most beautiful bakery in a preserved Belle Époque interior. The escargot pastries are life-changing.",
+      "must_try": "Escargot pistache-chocolat, pain des amis loaf",
+      "booking_tip": "Opens 7:45am, closed weekends. Queue starts early — worth it."
+    },
+    {
+      "name": "Septime",
+      "cuisine": "Modern French",
+      "price_tier": "comfort",
+      "neighbourhood": "Bastille, 11e",
+      "indoor": true,
+      "tags": ["local", "offbeat", "finedining"],
+      "good_for": ["couple", "solo"],
+      "priority": 8,
+      "description": "Bertrand Grébaut's flagship — seasonal, zero-waste, extraordinary. One of the most exciting restaurants in France.",
+      "must_try": "Set menu only — trust the kitchen",
+      "booking_tip": "Book 2-3 months ahead via their website. Lunch is slightly easier to get."
+    },
+    {
+      "name": "Marché d'Aligre",
+      "cuisine": "Food market",
+      "price_tier": "budget",
+      "neighbourhood": "Bastille, 12e",
+      "indoor": false,
+      "tags": ["markets", "local", "street"],
+      "good_for": ["solo", "couple", "family"],
+      "priority": 9,
+      "description": "Paris's most authentically local market. Cheap produce, North African stalls, great cheese vendor. No tourists.",
+      "must_try": "Roquefort from the cheese stall, fresh olives from the Moroccan vendor",
+      "booking_tip": "Tuesday-Sunday mornings, closes around 1pm. Cash preferred."
+    }
+  ],
+
+  "excursions": [
+    {
+      "name": "Catacombs of Paris (off-route)",
+      "duration": "2 hours",
+      "price_tier": "budget",
+      "neighbourhood": "Denfert-Rochereau, 14e",
+      "indoor": true,
+      "tags": ["history", "offbeat", "architecture"],
+      "good_for": ["solo", "couple", "small group"],
+      "priority": 9,
+      "description": "Six million bones arranged in eerie patterns beneath the city. More atmospheric than any museum.",
+      "booking_tip": "Book online at catacombes.paris.fr — sells out weeks ahead. Timed entry only."
+    },
+    {
+      "name": "Promenade Plantée (Coulée Verte)",
+      "duration": "2 hours",
+      "price_tier": "free",
+      "neighbourhood": "Bastille to Vincennes, 12e",
+      "indoor": false,
+      "tags": ["nature", "offbeat", "sport", "architecture"],
+      "good_for": ["solo", "couple", "family"],
+      "priority": 8,
+      "description": "The original High Line — an elevated railway converted to a garden walkway 20 years before New York's. Quiet and beautiful.",
+      "booking_tip": "Start at Bastille end. Walk east. Descend for coffee in the Viaduc des Arts below."
+    },
+    {
+      "name": "Marché aux Puces de Saint-Ouen",
+      "duration": "3 hours",
+      "price_tier": "varies",
+      "neighbourhood": "Saint-Ouen (beyond 18e)",
+      "indoor": false,
+      "tags": ["markets", "history", "offbeat", "art"],
+      "good_for": ["solo", "couple", "small group"],
+      "priority": 8,
+      "description": "The world's largest antique market. 3,000 stalls across 7 interconnected markets. Bric-a-brac to Baroque furniture.",
+      "booking_tip": "Saturday-Monday only. Metro Line 4 to Porte de Clignancourt. Get there before 11am."
+    }
+  ],
+
+  "hidden_gems": [
+    {
+      "name": "Passage Brady",
+      "neighbourhood": "Strasbourg-Saint-Denis, 10e",
+      "description": "A covered 19th-century passage now entirely occupied by Indian and Pakistani restaurants and spice shops. Surreal and delicious."
+    },
+    {
+      "name": "Musée de la Chasse et de la Nature",
+      "neighbourhood": "Le Marais, 3e",
+      "description": "A museum of hunting and nature in a 17th-century hôtel particulier, curated like a contemporary art exhibition. Completely overlooked."
+    },
+    {
+      "name": "Canal de l'Ourcq at dawn",
+      "neighbourhood": "Pantin / La Villette, 19e",
+      "description": "Walk the eastern stretch of the canal at sunrise. Joggers, fishermen, graffiti walls, no tourists whatsoever."
+    }
+  ],
+
+  "markets": [
+    {
+      "name": "Marché d'Aligre",
+      "days": "Tue-Sun, mornings until 1pm",
+      "neighbourhood": "Bastille, 12e",
+      "description": "Most local market in Paris. North African vendors, great cheese and produce."
+    },
+    {
+      "name": "Marché des Enfants Rouges",
+      "days": "Tue-Sun",
+      "neighbourhood": "Le Marais, 3e",
+      "description": "Paris's oldest covered market (1615). Lunch stalls from Morocco, Japan, Lebanon, Italy."
+    }
+  ],
+
+  "seasonal_notes": [
+    {
+      "label": "Winter (Dec-Feb)",
+      "months": [11, 0, 1],
+      "notes": "Cold and grey but atmospheric. Christmas markets at La Défense and Champs-Élysées in December. Fewer tourists, museums uncrowded. Push indoor experiences — covered passages, museums, wine bars."
+    },
+    {
+      "label": "Spring (Mar-May)",
+      "months": [2, 3, 4],
+      "notes": "Best season. Parisians flood the parks. Cherry blossom in Parc de Sceaux (30 min by RER). Terrasse culture begins in April. Book restaurants further ahead."
+    },
+    {
+      "label": "Summer (Jun-Aug)",
+      "months": [5, 6, 7],
+      "notes": "Paris Plages turns the Seine banks into a beach in July-August. Hot, can exceed 35°C — schedule outdoor slots before noon. Many local restaurants close in August."
+    },
+    {
+      "label": "Autumn (Sep-Nov)",
+      "months": [8, 9, 10],
+      "notes": "Second-best season. Harvest, beautiful light, locals return from August holidays. Nuit Blanche all-night art festival in October."
+    }
+  ]
+}

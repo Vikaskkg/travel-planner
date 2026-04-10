@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "pages/api/generate.js": {
+      "maxDuration": 30
+    },
+    "pages/api/debug.js": {
+      "maxDuration": 15
+    }
+  }
+}
