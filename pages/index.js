@@ -729,7 +729,7 @@ export default function Home() {
   const [isSurprise, setIsSurprise] = useState(false);
 
   const [prefs, setPrefs] = useState({
-    city: "", days: 3, group: "Solo",
+    city: "", days: 1, group: "Solo",
     pace: "Moderate", budget: "Mid-range",
     interests: ["history", "offbeat"],
     foodStyle: ["local", "street"],
@@ -801,8 +801,8 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>WanderWise — Local Itinerary Planner</title>
-        <meta name="description" content="AI-powered local city itinerary planner" />
+        <title>TripPivotal — Your Itinerary Planner</title>
+        <meta name="description" content="AI-powered Smart itinerary planner" />
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>" />
       </Head>
 
@@ -813,8 +813,8 @@ export default function Home() {
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ fontSize: 22 }}>🧭</span>
-          <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600 }}>WanderWise</span>
-          <span style={{ fontSize: 12, color: "var(--slate)", marginLeft: 4, fontStyle: "italic" }}>local planner</span>
+          <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600 }}>TripPivotal</span>
+          <span style={{ fontSize: 12, color: "var(--slate)", marginLeft: 4, fontStyle: "italic" }}>Smart planner</span>
         </div>
         <ModelToggle model={model} onChange={setModel} />
       </header>
