@@ -96,7 +96,7 @@ const PROVIDERS = [
     models: [
       { id: "meta-llama/llama-3.3-70b-instruct:free", label: "Llama 3.3 70B",       sublabel: "Strong reasoning", speed: 4 },
       { id: "google/gemma-3-27b-it:free",             label: "Gemma 3 27B",         sublabel: "Good instructions", speed: 4 },
-      { id: "mistralai/mistral-small-3.1-24b-instruct:free", label: "Mistral Small 3.1", sublabel: "Free · Fast",        speed: 5 },
+      { id: "mistralai/mistral-small-3.1-24b-instruct-2503:free", label: "Mistral Small 3.1", sublabel: " Fast",        speed: 5 },
     ],
   },
 ];
@@ -852,7 +852,7 @@ export default function Home() {
   const [isSurprise, setIsSurprise] = useState(false);
 
   const [prefs, setPrefs] = useState({
-    city: "", days: 3, group: "Solo",
+    city: "", days: 1, group: "Solo",
     pace: "Moderate", budget: "Mid-range",
     interests: ["history", "offbeat"],
     foodStyle: ["local", "street"],
@@ -925,7 +925,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>TripPivotal — Smart Itinerary Planner</title>
+        <title>TripPiovtal — Smart Itinerary Planner</title>
         <meta name="description" content="AI-powered local city itinerary planner" />
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>" />
       </Head>
@@ -937,7 +937,7 @@ export default function Home() {
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ fontSize: 22 }}>🧭</span>
-          <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600 }}>TripPivotal</span>
+          <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600 }}>TripPiovtal</span>
           <span style={{ fontSize: 12, color: "var(--slate)", marginLeft: 4, fontStyle: "italic" }}>Smart planner</span>
         </div>
         <ModelPicker provider={provider} orModel={orModel} onProviderChange={setProvider} onOrModelChange={setOrModel} />
