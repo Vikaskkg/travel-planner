@@ -1,10 +1,11 @@
 import Anthropic from "@anthropic-ai/sdk";
-import OpenAI from "openai";
+// OpenAI is imported dynamically inside each branch so the SDK never
+// validates OPENAI_API_KEY at module load time — only when actually used.
 import { fetchWeather } from "../../lib/weather.js";
 import { retrieveContext } from "../../lib/rag.js";
 
 // ── System prompt (cached by Anthropic — never changes) ─────────────────────
-const SYSTEM_PROMPT = `You are TripPiovtal, an Smart travel planner specialising in authentic, immersive city experiences. You create detailed day-by-day itineraries focused exclusively on:
+const SYSTEM_PROMPT = `You are TripPivotal, an expert local travel planner specialising in authentic, immersive city experiences. You create detailed day-by-day itineraries focused exclusively on:
 - Local sightseeing (landmarks, hidden gems, neighbourhoods, viewpoints)
 - Food and drinks (local restaurants, street food, cafes, markets, bars)
 - In-city local transport (metro, bus, tram, walking, cycling, rickshaw, tuk-tuk)
@@ -164,7 +165,7 @@ export default async function handler(req, res) {
 
     const userPrompt = buildUserPrompt(preferences, weatherContext, ragContextWithWeather, surprise);
 
-    console.log("\n========== TRIPPIVOTAL PROMPT ==========");
+    console.log("\n========== TripPivotal PROMPT ==========");
     console.log("Weather :", !!weatherContext, "| RAG :", ragContextWithWeather.length > 0, "| Model:", model, "| Surprise:", surprise);
     console.log("--- SYSTEM PROMPT (" + SYSTEM_PROMPT.length + " chars) ---");
     console.log(SYSTEM_PROMPT);
@@ -201,6 +202,7 @@ export default async function handler(req, res) {
       console.log("Cache stats:", JSON.stringify(cacheStats));
 
     } else if (model === "openai") {
+      const { default: OpenAI } = await import("openai");
       const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
       const response = await client.chat.completions.create({
         model: "gpt-4o-mini",
@@ -218,12 +220,13 @@ export default async function handler(req, res) {
       // OpenRouter is OpenAI-compatible: same SDK, different baseURL + key.
       // Docs: https://openrouter.ai/docs
       const orModel = preferences.openrouter_model || "google/gemini-flash-1.5";
+      const { default: OpenAI } = await import("openai");
       const client = new OpenAI({
         apiKey:  process.env.OPENROUTER_API_KEY,
         baseURL: "https://openrouter.ai/api/v1",
         defaultHeaders: {
-          "HTTP-Referer": process.env.SITE_URL || "https://TripPiovtal.vercel.app",
-          "X-Title": "TripPiovtal Travel Planner",
+          "HTTP-Referer": process.env.SITE_URL || "https://TripPivotal.vercel.app",
+          "X-Title": "TripPivotal Travel Planner",
         },
       });
       const response = await client.chat.completions.create({
