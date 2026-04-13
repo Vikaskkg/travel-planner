@@ -90,16 +90,13 @@ const PROVIDERS = [
   },
   {
     id: "openrouter",
-    label: "OpenRouter",
+    label: "Open Models",
     icon: "⊕",
-    sublabel: "200+ models",
+    sublabel: "Model Orchestration",
     models: [
-      { id: "google/gemini-flash-1.5",      label: "Gemini Flash 1.5",  sublabel: "Very fast · Free tier", speed: 5 },
-      { id: "google/gemini-pro-1.5",        label: "Gemini Pro 1.5",    sublabel: "High quality",          speed: 3 },
-      { id: "mistralai/mistral-nemo",       label: "Mistral Nemo",      sublabel: "Lightweight · Fast",    speed: 5 },
-      { id: "meta-llama/llama-3.1-8b-instruct:free", label: "Llama 3.1 8B", sublabel: "Free on OpenRouter", speed: 4 },
-      { id: "deepseek/deepseek-chat",       label: "DeepSeek V2.5",     sublabel: "Strong · Very cheap",   speed: 4 },
-      { id: "anthropic/claude-haiku-4-5",   label: "Haiku via OR",      sublabel: "Via OpenRouter",        speed: 5 },
+      { id: "meta-llama/llama-3.3-70b-instruct:free", label: "Llama 3.3 70B",       sublabel: "Strong reasoning", speed: 4 },
+      { id: "google/gemma-3-27b-it:free",             label: "Gemma 3 27B",         sublabel: "Good instructions", speed: 4 },
+      { id: "mistralai/mistral-small-3.1-24b-instruct:free", label: "Mistral Small 3.1", sublabel: "Free · Fast",        speed: 5 },
     ],
   },
 ];
@@ -844,7 +841,7 @@ function ItineraryView({ data, meta, model, isSurprise, usedOrModel, onReset }) 
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function Home() {
   const [provider, setProvider]   = useState("claude");
-  const [orModel, setOrModel]     = useState("google/gemini-flash-1.5");
+  const [orModel, setOrModel]     = useState("meta-llama/llama-3.3-70b-instruct:free");
   const [step, setStep]           = useState(1);
   const [itinerary, setItinerary] = useState(null);
   const [meta, setMeta]           = useState(null);
@@ -855,7 +852,7 @@ export default function Home() {
   const [isSurprise, setIsSurprise] = useState(false);
 
   const [prefs, setPrefs] = useState({
-    city: "", days: 1, group: "Solo",
+    city: "", days: 3, group: "Solo",
     pace: "Moderate", budget: "Mid-range",
     interests: ["history", "offbeat"],
     foodStyle: ["local", "street"],
@@ -928,7 +925,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>TripPiovtal — Smart Itinerary Planner</title>
+        <title>TripPivotal — Smart Itinerary Planner</title>
         <meta name="description" content="AI-powered local city itinerary planner" />
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>" />
       </Head>
@@ -940,7 +937,7 @@ export default function Home() {
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ fontSize: 22 }}>🧭</span>
-          <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600 }}>TripPiovtal</span>
+          <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600 }}>TripPivotal</span>
           <span style={{ fontSize: 12, color: "var(--slate)", marginLeft: 4, fontStyle: "italic" }}>Smart planner</span>
         </div>
         <ModelPicker provider={provider} orModel={orModel} onProviderChange={setProvider} onOrModelChange={setOrModel} />
