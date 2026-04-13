@@ -79,20 +79,12 @@ const PROVIDERS = [
       { id: "claude-sonnet", label: "Sonnet 4.6", sublabel: "Balanced · Recommended", speed: 4 },
     ],
   },
-  {
-    id: "openai",
-    label: "OpenAI",
-    icon: "⬡",
-    models: [
-      { id: "openai-mini",    label: "GPT-4o mini", sublabel: "Fast · Cheap", speed: 5 },
-      { id: "openai-4o",      label: "GPT-4o",      sublabel: "Best quality", speed: 3 },
-    ],
-  },
+ 
   {
     id: "openrouter",
     label: "Open Model",
     icon: "⊕",
-    sublabel: "",
+    sublabel: "Choose for 1/2 day of plan",
     models: [
       { id: "meta-llama/llama-3.3-70b-instruct:free", label: "Llama 3.3 70B",       sublabel: "Free · Strong reasoning", speed: 4 },
       { id: "google/gemma-3-27b-it:free",             label: "Gemma 3 27B",         sublabel: "Free · Good instructions", speed: 4 },
@@ -1010,7 +1002,7 @@ export default function Home() {
   const [isSurprise, setIsSurprise] = useState(false);
 
   const [prefs, setPrefs] = useState({
-    city: "", days: 3, group: "Solo",
+    city: "", days: 1, group: "Solo",
     pace: "Moderate", budget: "Mid-range",
     interests: ["history", "offbeat"],
     foodStyle: ["local", "street"],
