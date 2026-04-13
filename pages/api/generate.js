@@ -4,7 +4,7 @@ import { fetchWeather } from "../../lib/weather.js";
 import { retrieveContext } from "../../lib/rag.js";
 
 // ── System prompt (cached by Anthropic — never changes) ─────────────────────
-const SYSTEM_PROMPT = `You are WanderWise, an expert local travel planner specialising in authentic, immersive city experiences. You create detailed day-by-day itineraries focused exclusively on:
+const SYSTEM_PROMPT = `You are TripPiovtal, an Smart travel planner specialising in authentic, immersive city experiences. You create detailed day-by-day itineraries focused exclusively on:
 - Local sightseeing (landmarks, hidden gems, neighbourhoods, viewpoints)
 - Food and drinks (local restaurants, street food, cafes, markets, bars)
 - In-city local transport (metro, bus, tram, walking, cycling, rickshaw, tuk-tuk)
@@ -164,7 +164,7 @@ export default async function handler(req, res) {
 
     const userPrompt = buildUserPrompt(preferences, weatherContext, ragContextWithWeather, surprise);
 
-    console.log("\n========== WANDERWISE PROMPT ==========");
+    console.log("\n========== TRIPPIVOTAL PROMPT ==========");
     console.log("Weather :", !!weatherContext, "| RAG :", ragContextWithWeather.length > 0, "| Model:", model, "| Surprise:", surprise);
     console.log("--- SYSTEM PROMPT (" + SYSTEM_PROMPT.length + " chars) ---");
     console.log(SYSTEM_PROMPT);
@@ -200,11 +200,11 @@ export default async function handler(req, res) {
       };
       console.log("Cache stats:", JSON.stringify(cacheStats));
 
-    } else {
+    } else if (model === "openai") {
       const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
       const response = await client.chat.completions.create({
         model: "gpt-4o-mini",
-        max_tokens: 8000,
+        max_tokens: 4096,
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
           { role: "user", content: userPrompt },
@@ -212,6 +212,32 @@ export default async function handler(req, res) {
         response_format: { type: "json_object" },
       });
       text = response.choices[0].message.content;
+
+    } else {
+      // ── OpenRouter — any model string passed as `openrouter_model` ──────
+      // OpenRouter is OpenAI-compatible: same SDK, different baseURL + key.
+      // Docs: https://openrouter.ai/docs
+      const orModel = preferences.openrouter_model || "google/gemini-flash-1.5";
+      const client = new OpenAI({
+        apiKey:  process.env.OPENROUTER_API_KEY,
+        baseURL: "https://openrouter.ai/api/v1",
+        defaultHeaders: {
+          "HTTP-Referer": process.env.SITE_URL || "https://TripPiovtal.vercel.app",
+          "X-Title": "TripPiovtal Travel Planner",
+        },
+      });
+      const response = await client.chat.completions.create({
+        model: orModel,
+        max_tokens: 4096,
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: userPrompt },
+        ],
+        // Note: not all OpenRouter models support response_format json_object
+        // So we rely on our extractJSON parser instead
+      });
+      text = response.choices[0].message.content;
+      console.log("OpenRouter model used:", orModel);
     }
 
     // ── Step 3: Parse and return ───────────────────────────────────────────
@@ -222,6 +248,7 @@ export default async function handler(req, res) {
       model,
       meta: {
         surprise_mode: !!surprise,
+        openrouter_model: model === "openrouter" ? (preferences.openrouter_model || "google/gemini-flash-1.5") : null,
         weather_loaded: !!weatherContext,
         rag_loaded: ragContextWithWeather.length > 0,
         cache_stats: cacheStats,
