@@ -5,7 +5,7 @@ import { fetchWeather } from "../../lib/weather.js";
 import { retrieveContext } from "../../lib/rag.js";
 
 // ── System prompt (cached by Anthropic — never changes) ─────────────────────
-const SYSTEM_PROMPT = `You are TripPivotal, an expert local travel planner specialising in authentic, immersive city experiences. You create detailed day-by-day itineraries focused exclusively on:
+const SYSTEM_PROMPT = `You are TripPiovtal, an expert local travel planner specialising in authentic, immersive city experiences. You create detailed day-by-day itineraries focused exclusively on:
 - Local sightseeing (landmarks, hidden gems, neighbourhoods, viewpoints)
 - Food and drinks (local restaurants, street food, cafes, markets, bars)
 - In-city local transport (metro, bus, tram, walking, cycling, rickshaw, tuk-tuk)
@@ -165,7 +165,7 @@ export default async function handler(req, res) {
 
     const userPrompt = buildUserPrompt(preferences, weatherContext, ragContextWithWeather, surprise);
 
-    console.log("\n========== TripPivotal PROMPT ==========");
+    console.log("\n========== TripPiovtal PROMPT ==========");
     console.log("Weather :", !!weatherContext, "| RAG :", ragContextWithWeather.length > 0, "| Model:", model, "| Surprise:", surprise);
     console.log("--- SYSTEM PROMPT (" + SYSTEM_PROMPT.length + " chars) ---");
     console.log(SYSTEM_PROMPT);
@@ -216,31 +216,72 @@ export default async function handler(req, res) {
       text = response.choices[0].message.content;
 
     } else {
-      // ── OpenRouter — any model string passed as `openrouter_model` ──────
-      // OpenRouter is OpenAI-compatible: same SDK, different baseURL + key.
-      // Docs: https://openrouter.ai/docs
-      const orModel = preferences.openrouter_model || "meta-llama/llama-3.3-70b-instruct:free";
+      // ── OpenRouter — with automatic fallback chain on 429 / 404 ──────────
+      // Free models are rate-limited (200 req/day, 20 req/min per model).
+      // If the chosen model is throttled we cascade through the fallback list
+      // so the user always gets a response rather than an error screen.
       const { default: OpenAI } = await import("openai");
       const client = new OpenAI({
         apiKey:  process.env.OPENROUTER_API_KEY,
         baseURL: "https://openrouter.ai/api/v1",
         defaultHeaders: {
-          "HTTP-Referer": process.env.SITE_URL || "https://TripPivotal.vercel.app",
-          "X-Title": "TripPivotal Travel Planner",
+          "HTTP-Referer": process.env.SITE_URL || "https://TripPiovtal.vercel.app",
+          "X-Title": "TripPiovtal Travel Planner",
         },
       });
-      const response = await client.chat.completions.create({
-        model: orModel,
-        max_tokens: 4096,
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: userPrompt },
-        ],
-        // Note: not all OpenRouter models support response_format json_object
-        // So we rely on our extractJSON parser instead
-      });
-      text = response.choices[0].message.content;
-      console.log("OpenRouter model used:", orModel);
+
+      // Build the model queue: requested model first, then free fallbacks
+      const FREE_FALLBACKS = [
+        "meta-llama/llama-3.3-70b-instruct:free",
+        "google/gemma-3-27b-it:free",
+        "mistralai/mistral-small-3.1-24b-instruct-2503:free",
+        "openrouter/auto",  // OpenRouter picks best available — last resort
+      ];
+      const requested = preferences.openrouter_model || FREE_FALLBACKS[0];
+      // Deduplicate: put requested first, then remaining fallbacks
+      const modelQueue = [
+        requested,
+        ...FREE_FALLBACKS.filter(m => m !== requested),
+      ];
+
+      let lastError = null;
+      let modelUsed = null;
+
+      for (const tryModel of modelQueue) {
+        try {
+          console.log("OpenRouter trying:", tryModel);
+          const response = await client.chat.completions.create({
+            model: tryModel,
+            max_tokens: 4096,
+            messages: [
+              { role: "system", content: SYSTEM_PROMPT },
+              { role: "user", content: userPrompt },
+            ],
+          });
+          text = response.choices[0].message.content;
+          modelUsed = tryModel;
+          console.log("OpenRouter success with:", tryModel);
+          break; // got a response — stop trying
+        } catch (err) {
+          const status = err?.status || err?.response?.status;
+          const is429 = status === 429 || err?.message?.includes("429") || err?.message?.includes("rate limit");
+          const is404 = status === 404 || err?.message?.includes("404") || err?.message?.includes("No endpoints");
+          if (is429 || is404) {
+            console.warn(`OpenRouter ${status} on ${tryModel} — trying next fallback`);
+            lastError = err;
+            continue; // try next model
+          }
+          throw err; // non-rate-limit error — surface it
+        }
+      }
+
+      if (!text) {
+        throw new Error(
+          lastError?.message?.includes("429")
+            ? "All free models are currently rate-limited. Please wait a few minutes or choose a paid model."
+            : `OpenRouter failed: ${lastError?.message || "unknown error"}`
+        );
+      }
     }
 
     // ── Step 3: Parse and return ───────────────────────────────────────────
@@ -251,7 +292,7 @@ export default async function handler(req, res) {
       model,
       meta: {
         surprise_mode: !!surprise,
-        openrouter_model: model === "openrouter" ? (preferences.openrouter_model || "google/gemini-flash-1.5") : null,
+        openrouter_model: model === "openrouter" ? (preferences.openrouter_model || "meta-llama/llama-3.3-70b-instruct:free") : null,
         weather_loaded: !!weatherContext,
         rag_loaded: ragContextWithWeather.length > 0,
         cache_stats: cacheStats,
