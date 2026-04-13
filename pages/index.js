@@ -90,13 +90,13 @@ const PROVIDERS = [
   },
   {
     id: "openrouter",
-    label: "Open Models",
+    label: "Open Model",
     icon: "⊕",
-    sublabel: "Model Orchestration",
+    sublabel: "",
     models: [
-      { id: "meta-llama/llama-3.3-70b-instruct:free", label: "Llama 3.3 70B",       sublabel: "Strong reasoning", speed: 4 },
-      { id: "google/gemma-3-27b-it:free",             label: "Gemma 3 27B",         sublabel: "Good instructions", speed: 4 },
-      { id: "mistralai/mistral-small-3.1-24b-instruct-2503:free", label: "Mistral Small 3.1", sublabel: " Fast",        speed: 5 },
+      { id: "meta-llama/llama-3.3-70b-instruct:free", label: "Llama 3.3 70B",       sublabel: "Free · Strong reasoning", speed: 4 },
+      { id: "google/gemma-3-27b-it:free",             label: "Gemma 3 27B",         sublabel: "Free · Good instructions", speed: 4 },
+      { id: "mistralai/mistral-small-3.1-24b-instruct-2503:free", label: "Mistral Small 3.1", sublabel: "Free · Fast",        speed: 5 },
     ],
   },
 ];
@@ -743,11 +743,14 @@ function ItineraryView({ data, meta, model, isSurprise, usedOrModel, onReset }) 
             </p>
           )}
         </div>
-        <button onClick={onReset} style={{
-          padding: "8px 16px", borderRadius: 8, border: "1px solid var(--border)",
-          background: "white", color: "var(--slate)", fontSize: 13,
-          cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
-        }}>← New plan</button>
+        <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+          <ShareButton />
+          <button onClick={onReset} style={{
+            padding: "8px 16px", borderRadius: 8, border: "1px solid var(--border)",
+            background: "white", color: "var(--slate)", fontSize: 13,
+            cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
+          }}>← New plan</button>
+        </div>
       </div>
 
       {/* Highlights */}
@@ -838,21 +841,67 @@ function ItineraryView({ data, meta, model, isSurprise, usedOrModel, onReset }) 
   );
 }
 
+// ─── URL share helpers ───────────────────────────────────────────────────────
+function encodeItinerary(itinerary, meta) {
+  try {
+    const payload = JSON.stringify({ itinerary, meta });
+    return btoa(encodeURIComponent(payload));
+  } catch { return null; }
+}
+
+function decodeItinerary(hash) {
+  try {
+    const encoded = hash.replace(/^#data=/, "");
+    if (!encoded) return null;
+    return JSON.parse(decodeURIComponent(atob(encoded)));
+  } catch { return null; }
+}
+
+function ShareButton() {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  };
+  return (
+    <button onClick={copy} style={{
+      padding: "8px 16px", borderRadius: 8,
+      border: "1px solid var(--border)",
+      background: copied ? "var(--sage-light)" : "white",
+      color: copied ? "var(--sage)" : "var(--slate)",
+      fontSize: 13, cursor: "pointer",
+      fontFamily: "'DM Sans', sans-serif",
+      transition: "all .2s",
+      display: "flex", alignItems: "center", gap: 6,
+    }}>
+      {copied ? "✓ Copied!" : "⎘ Share"}
+    </button>
+  );
+}
+
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function Home() {
   const [provider, setProvider]   = useState("claude");
   const [orModel, setOrModel]     = useState("meta-llama/llama-3.3-70b-instruct:free");
-  const [step, setStep]           = useState(1);
-  const [itinerary, setItinerary] = useState(null);
-  const [meta, setMeta]           = useState(null);
+
+  // Restore shared itinerary from URL hash if present (no API call)
+  const shared = typeof window !== "undefined"
+    ? decodeItinerary(window.location.hash)
+    : null;
+
+  const [step, setStep]           = useState(shared ? 3 : 1);
+  const [itinerary, setItinerary] = useState(shared?.itinerary || null);
+  const [meta, setMeta]           = useState(shared?.meta || null);
   const [error, setError]         = useState("");
-  const [usedModel, setUsedModel] = useState("claude");
+  const [usedModel, setUsedModel] = useState(shared ? "claude" : "claude");
   const [usedOrModel, setUsedOrModel] = useState("");
   const [agents, setAgents]       = useState([]);
   const [isSurprise, setIsSurprise] = useState(false);
 
   const [prefs, setPrefs] = useState({
-    city: "", days: 1, group: "Solo",
+    city: "", days: 3, group: "Solo",
     pace: "Moderate", budget: "Mid-range",
     interests: ["history", "offbeat"],
     foodStyle: ["local", "street"],
@@ -903,6 +952,11 @@ export default function Home() {
       setItinerary(data.itinerary);
       setMeta(data.meta);
       setStep(3);
+      // Write shareable URL — recipient lands on result page, no API call made
+      const encoded = encodeItinerary(data.itinerary, data.meta);
+      if (encoded && typeof window !== "undefined") {
+        window.history.replaceState(null, "", `#data=${encoded}`);
+      }
     } catch (e) {
       setError(e.message || "Generation failed");
       setStep(1);
@@ -935,11 +989,13 @@ export default function Home() {
         display: "flex", alignItems: "center", justifyContent: "space-between",
         height: 60, background: "white", position: "sticky", top: 0, zIndex: 100,
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontSize: 22 }}>🧭</span>
-          <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600 }}>TripPiovtal</span>
-          <span style={{ fontSize: 12, color: "var(--slate)", marginLeft: 4, fontStyle: "italic" }}>Smart planner</span>
-        </div>
+	  
+	  <div onClick={() => { setStep(1); setItinerary(null); setMeta(null); setIsSurprise(false); setUsedOrModel(""); }}
+  style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
+		  <span style={{ fontSize: 22 }}>🧭</span>
+		  <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600 }}>TripPivotal</span>
+		  <span style={{ fontSize: 12, color: "var(--slate)", marginLeft: 4, fontStyle: "italic" }}>Smart planner</span>
+	</div>
         <ModelPicker provider={provider} orModel={orModel} onProviderChange={setProvider} onOrModelChange={setOrModel} />
       </header>
 
@@ -1101,7 +1157,12 @@ export default function Home() {
             model={usedModel}
             isSurprise={isSurprise}
             usedOrModel={usedOrModel}
-            onReset={() => { setStep(1); setItinerary(null); setMeta(null); setIsSurprise(false); setUsedOrModel(""); }}
+            onReset={() => {
+              setStep(1); setItinerary(null); setMeta(null);
+              setIsSurprise(false); setUsedOrModel("");
+              if (typeof window !== "undefined")
+                window.history.replaceState(null, "", window.location.pathname);
+            }}
           />
         )}
 
