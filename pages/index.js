@@ -68,31 +68,144 @@ function Chip({ selected, onClick, children }) {
   );
 }
 
-const AI_MODELS = [
-  { id: "claude", label: "Model A", icon: "◈" },
-  { id: "openai", label: "Model B", icon: "⬡" },
+// ─── Model catalogue ─────────────────────────────────────────────────────────
+const PROVIDERS = [
+  {
+    id: "claude",
+    label: "Anthropic",
+    icon: "◈",
+    models: [
+      { id: "claude-haiku", label: "Haiku 4.5", sublabel: "Fast · Cheapest", speed: 5 },
+      { id: "claude-sonnet", label: "Sonnet 4.6", sublabel: "Balanced · Recommended", speed: 4 },
+    ],
+  },
+  {
+    id: "openai",
+    label: "OpenAI",
+    icon: "⬡",
+    models: [
+      { id: "openai-mini",    label: "GPT-4o mini", sublabel: "Fast · Cheap", speed: 5 },
+      { id: "openai-4o",      label: "GPT-4o",      sublabel: "Best quality", speed: 3 },
+    ],
+  },
+  {
+    id: "openrouter",
+    label: "OpenRouter",
+    icon: "⊕",
+    sublabel: "200+ models",
+    models: [
+      { id: "google/gemini-flash-1.5",      label: "Gemini Flash 1.5",  sublabel: "Very fast · Free tier", speed: 5 },
+      { id: "google/gemini-pro-1.5",        label: "Gemini Pro 1.5",    sublabel: "High quality",          speed: 3 },
+      { id: "mistralai/mistral-nemo",       label: "Mistral Nemo",      sublabel: "Lightweight · Fast",    speed: 5 },
+      { id: "meta-llama/llama-3.1-8b-instruct:free", label: "Llama 3.1 8B", sublabel: "Free on OpenRouter", speed: 4 },
+      { id: "deepseek/deepseek-chat",       label: "DeepSeek V2.5",     sublabel: "Strong · Very cheap",   speed: 4 },
+      { id: "anthropic/claude-haiku-4-5",   label: "Haiku via OR",      sublabel: "Via OpenRouter",        speed: 5 },
+    ],
+  },
 ];
 
-function ModelToggle({ model, onChange }) {
+// Flatten to a map for easy lookup
+const MODEL_MAP = {};
+PROVIDERS.forEach(p => p.models.forEach(m => { MODEL_MAP[m.id] = { ...m, provider: p.id }; }));
+
+function SpeedDots({ speed }) {
   return (
-    <div style={{
-      display: "inline-flex", background: "var(--paper2)",
-      border: "1px solid var(--border)", borderRadius: 32, padding: 3,
-    }}>
-      {AI_MODELS.map(m => (
-        <button key={m.id} onClick={() => onChange(m.id)} style={{
-          padding: "6px 18px", borderRadius: 28, border: "none",
-          background: model === m.id ? "white" : "transparent",
-          boxShadow: model === m.id ? "0 1px 4px rgba(0,0,0,0.12)" : "none",
-          color: model === m.id ? "var(--ink)" : "var(--slate)",
-          fontWeight: model === m.id ? 500 : 400,
-          fontSize: 13, cursor: "pointer", transition: "all .2s",
-          fontFamily: "'DM Sans', sans-serif",
-          display: "flex", alignItems: "center", gap: 6,
-        }}>
-          <span style={{ fontSize: 15 }}>{m.icon}</span> {m.label}
-        </button>
+    <span style={{ display: "inline-flex", gap: 2, alignItems: "center" }}>
+      {[1,2,3,4,5].map(i => (
+        <span key={i} style={{
+          width: 5, height: 5, borderRadius: "50%",
+          background: i <= speed ? "var(--sage)" : "var(--mist)",
+          display: "inline-block",
+        }} />
       ))}
+    </span>
+  );
+}
+
+function ModelPicker({ provider, orModel, onProviderChange, onOrModelChange }) {
+  const [open, setOpen] = useState(false);
+  const activeProvider = PROVIDERS.find(p => p.id === provider) || PROVIDERS[0];
+  const activeOrModel  = PROVIDERS.find(p => p.id === "openrouter")?.models.find(m => m.id === orModel)
+                         || PROVIDERS.find(p => p.id === "openrouter")?.models[0];
+
+  const displayLabel = provider === "openrouter"
+    ? (activeOrModel?.label || "Pick model")
+    : activeProvider.label;
+
+  return (
+    <div style={{ position: "relative" }}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{
+          display: "flex", alignItems: "center", gap: 8,
+          padding: "7px 14px", borderRadius: 20,
+          border: "1px solid var(--border)", background: "white",
+          fontSize: 13, cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
+          color: "var(--ink)", transition: "all .15s",
+        }}
+      >
+        <span style={{ fontSize: 14 }}>{activeProvider.icon}</span>
+        <span style={{ fontWeight: 500 }}>{displayLabel}</span>
+        <span style={{ opacity: .5, fontSize: 11 }}>{open ? "▲" : "▼"}</span>
+      </button>
+
+      {open && (
+        <div style={{
+          position: "absolute", top: "calc(100% + 6px)", right: 0,
+          background: "white", border: "1px solid var(--border)",
+          borderRadius: 12, width: 300, zIndex: 200, overflow: "hidden",
+          boxShadow: "0 4px 24px rgba(26,22,18,0.12)",
+        }}>
+          {PROVIDERS.map(prov => (
+            <div key={prov.id}>
+              {/* Provider header */}
+              <div style={{
+                padding: "8px 14px 4px",
+                fontSize: 10, fontWeight: 500, letterSpacing: ".06em",
+                textTransform: "uppercase", color: "var(--slate)",
+                background: "var(--paper2)",
+                borderTop: "1px solid var(--border)",
+              }}>
+                <span style={{ marginRight: 6 }}>{prov.icon}</span>{prov.label}
+                {prov.sublabel && <span style={{ fontWeight: 400, opacity: .7, marginLeft: 4 }}>· {prov.sublabel}</span>}
+              </div>
+              {/* Model options */}
+              {prov.models.map(m => {
+                const isActive = provider === prov.id && (prov.id !== "openrouter" || orModel === m.id);
+                return (
+                  <div
+                    key={m.id}
+                    onClick={() => {
+                      onProviderChange(prov.id);
+                      if (prov.id === "openrouter") onOrModelChange(m.id);
+                      setOpen(false);
+                    }}
+                    style={{
+                      display: "flex", alignItems: "center", justifyContent: "space-between",
+                      padding: "9px 14px", cursor: "pointer",
+                      background: isActive ? "var(--clay-light)" : "white",
+                      transition: "background .1s",
+                    }}
+                    onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--paper2)"; }}
+                    onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = "white"; }}
+                  >
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: isActive ? 500 : 400, color: isActive ? "var(--clay-dark)" : "var(--ink)" }}>
+                        {m.label}
+                      </div>
+                      <div style={{ fontSize: 11, color: "var(--slate)", marginTop: 1 }}>{m.sublabel}</div>
+                    </div>
+                    <SpeedDots speed={m.speed} />
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+          <div style={{ padding: "8px 14px", fontSize: 11, color: "var(--slate)", borderTop: "1px solid var(--border)", background: "var(--paper2)" }}>
+            Speed dots = response time (5 = fastest)
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -469,7 +582,7 @@ function recalculateTimes(slots) {
 }
 
 // ─── Itinerary view with drag state ──────────────────────────────────────────
-function ItineraryView({ data, meta, model, isSurprise, onReset }) {
+function ItineraryView({ data, meta, model, isSurprise, usedOrModel, onReset }) {
   const [days, setDays] = useState(data.days.map((d, i) => ({
     ...d,
     slots: d.slots.map((s, j) => ({ ...s, id: s.id || `d${i}s${j}` })),
@@ -562,7 +675,13 @@ function ItineraryView({ data, meta, model, isSurprise, onReset }) {
     setDayDragOver(null);
   }, []);
 
-  // model badge removed — no brand names shown
+  const modelLabel = (() => {
+    if (model === "openrouter") {
+      const or = PROVIDERS.find(p => p.id === "openrouter")?.models.find(m => m.id === usedOrModel);
+      return or ? `⊕ ${or.label}` : "⊕ OpenRouter";
+    }
+    return model === "claude" ? "◈ Anthropic" : "⬡ OpenAI";
+  })();
 
   return (
     <div>
@@ -598,6 +717,11 @@ function ItineraryView({ data, meta, model, isSurprise, onReset }) {
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, flexWrap: "wrap" }}>
 
+            <span style={{
+              fontSize: 11, fontWeight: 500, padding: "2px 10px",
+              borderRadius: 12, background: "var(--paper2)", color: "var(--slate)",
+              border: "1px solid var(--border)",
+            }}>{modelLabel}</span>
             {meta?.weather_loaded && (
               <span style={{
                 fontSize: 11, padding: "2px 10px", borderRadius: 12,
@@ -719,12 +843,14 @@ function ItineraryView({ data, meta, model, isSurprise, onReset }) {
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function Home() {
-  const [model, setModel]         = useState("claude");
+  const [provider, setProvider]   = useState("claude");
+  const [orModel, setOrModel]     = useState("google/gemini-flash-1.5");
   const [step, setStep]           = useState(1);
   const [itinerary, setItinerary] = useState(null);
   const [meta, setMeta]           = useState(null);
   const [error, setError]         = useState("");
   const [usedModel, setUsedModel] = useState("claude");
+  const [usedOrModel, setUsedOrModel] = useState("");
   const [agents, setAgents]       = useState([]);
   const [isSurprise, setIsSurprise] = useState(false);
 
@@ -754,7 +880,8 @@ export default function Home() {
     if (!prefs.city.trim()) { setError("Please enter a city."); return; }
     setError("");
     setStep(2);
-    setUsedModel(model);
+    setUsedModel(provider);
+    setUsedOrModel(orModel);
     setIsSurprise(surprise);
     setAgents(AGENT_STEPS.map((a, i) => ({ ...a, status: i === 0 ? "running" : "pending" })));
 
@@ -770,7 +897,7 @@ export default function Home() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ preferences: prefs, model, surprise }),
+        body: JSON.stringify({ preferences: { ...prefs, openrouter_model: orModel }, model: provider, surprise }),
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
@@ -801,8 +928,8 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>TripPivotal — Your Itinerary Planner</title>
-        <meta name="description" content="AI-powered Smart itinerary planner" />
+        <title>TripPiovtal — Smart Itinerary Planner</title>
+        <meta name="description" content="AI-powered local city itinerary planner" />
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>" />
       </Head>
 
@@ -813,10 +940,10 @@ export default function Home() {
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ fontSize: 22 }}>🧭</span>
-          <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600 }}>TripPivotal</span>
+          <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600 }}>TripPiovtal</span>
           <span style={{ fontSize: 12, color: "var(--slate)", marginLeft: 4, fontStyle: "italic" }}>Smart planner</span>
         </div>
-        <ModelToggle model={model} onChange={setModel} />
+        <ModelPicker provider={provider} orModel={orModel} onProviderChange={setProvider} onOrModelChange={setOrModel} />
       </header>
 
       <main style={{ maxWidth: 760, margin: "0 auto", padding: "32px 24px 64px" }}>
@@ -947,7 +1074,7 @@ export default function Home() {
             <div style={{ fontSize: 40, marginBottom: 16 }}>🧭</div>
             <h2 style={{ fontSize: 22, marginBottom: 6 }}>Building your plan</h2>
             <p style={{ fontSize: 14, color: "var(--slate)", marginBottom: 32 }}>
-              {prefs.city} · {prefs.days} day{prefs.days > 1 ? "s" : ""}
+              {prefs.city} · {prefs.days} day{prefs.days > 1 ? "s" : ""} · {provider === "openrouter" ? "OpenRouter" : provider === "claude" ? "Anthropic" : "OpenAI"}
             </p>
             <div style={{ textAlign: "left" }}>
               {agents.map(a => (
@@ -976,7 +1103,8 @@ export default function Home() {
             meta={meta}
             model={usedModel}
             isSurprise={isSurprise}
-            onReset={() => { setStep(1); setItinerary(null); setMeta(null); setIsSurprise(false); }}
+            usedOrModel={usedOrModel}
+            onReset={() => { setStep(1); setItinerary(null); setMeta(null); setIsSurprise(false); setUsedOrModel(""); }}
           />
         )}
 
