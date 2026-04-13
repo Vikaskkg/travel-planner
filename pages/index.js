@@ -97,6 +97,7 @@ const PROVIDERS = [
       { id: "meta-llama/llama-3.3-70b-instruct:free", label: "Llama 3.3 70B",       sublabel: "Free · Strong reasoning", speed: 4 },
       { id: "google/gemma-3-27b-it:free",             label: "Gemma 3 27B",         sublabel: "Free · Good instructions", speed: 4 },
       { id: "mistralai/mistral-small-3.1-24b-instruct-2503:free", label: "Mistral Small 3.1", sublabel: "Free · Fast",        speed: 5 },
+      
     ],
   },
 ];
@@ -744,7 +745,7 @@ function ItineraryView({ data, meta, model, isSurprise, usedOrModel, onReset }) 
           )}
         </div>
         <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-          <ShareButton />
+          <ShareButton title={data.title} tagline={data.tagline} />
           <button onClick={onReset} style={{
             padding: "8px 16px", borderRadius: 8, border: "1px solid var(--border)",
             background: "white", color: "var(--slate)", fontSize: 13,
@@ -857,27 +858,135 @@ function decodeItinerary(hash) {
   } catch { return null; }
 }
 
-function ShareButton() {
-  const [copied, setCopied] = useState(false);
-  const copy = () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
+function ShareButton({ title, tagline }) {
+  const [state, setState] = useState("idle"); // idle | copied | shared | open
+  const url = typeof window !== "undefined" ? window.location.href : "";
+
+  const shareText = title
+    ? `${title} — planned with TripPivotal`
+    : "Check out this travel itinerary I planned!";
+
+  async function handleShare() {
+    // 1. Try Web Share API — triggers native sheet on mobile (WhatsApp, iMessage, etc.)
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({ title: shareText, text: tagline || shareText, url });
+        setState("shared");
+        setTimeout(() => setState("idle"), 2500);
+        return;
+      } catch (err) {
+        if (err.name === "AbortError") return; // user dismissed — do nothing
+      }
+    }
+    // 2. Desktop fallback — show social links panel
+    setState(prev => prev === "open" ? "idle" : "open");
+  }
+
+  function copyLink() {
+    navigator.clipboard.writeText(url).then(() => {
+      setState("copied");
+      setTimeout(() => setState("idle"), 2500);
     });
-  };
+  }
+
+  const encoded = encodeURIComponent(url);
+  const encodedText = encodeURIComponent(shareText);
+  const SOCIALS = [
+    { label: "WhatsApp",  color: "#25D366", href: `https://wa.me/?text=${encodedText}%20${encoded}`,          icon: "W" },
+    { label: "X",         color: "#000000", href: `https://x.com/intent/tweet?text=${encodedText}&url=${encoded}`, icon: "𝕏" },
+    { label: "Facebook",  color: "#1877F2", href: `https://www.facebook.com/sharer/sharer.php?u=${encoded}`,  icon: "f" },
+    { label: "Telegram",  color: "#2AABEE", href: `https://t.me/share/url?url=${encoded}&text=${encodedText}`, icon: "T" },
+    { label: "Email",     color: "#6b8f71", href: `mailto:?subject=${encodedText}&body=${encoded}`,           icon: "✉" },
+  ];
+
   return (
-    <button onClick={copy} style={{
-      padding: "8px 16px", borderRadius: 8,
-      border: "1px solid var(--border)",
-      background: copied ? "var(--sage-light)" : "white",
-      color: copied ? "var(--sage)" : "var(--slate)",
-      fontSize: 13, cursor: "pointer",
-      fontFamily: "'DM Sans', sans-serif",
-      transition: "all .2s",
-      display: "flex", alignItems: "center", gap: 6,
-    }}>
-      {copied ? "✓ Copied!" : "⎘ Share"}
-    </button>
+    <div style={{ position: "relative" }}>
+      <button
+        onClick={handleShare}
+        style={{
+          padding: "8px 16px", borderRadius: 8,
+          border: "1px solid var(--border)",
+          background: state === "shared" || state === "copied" ? "var(--sage-light)" : "white",
+          color: state === "shared" || state === "copied" ? "var(--sage)" : "var(--slate)",
+          fontSize: 13, cursor: "pointer",
+          fontFamily: "'DM Sans', sans-serif", transition: "all .2s",
+          display: "flex", alignItems: "center", gap: 6, whiteSpace: "nowrap",
+        }}
+      >
+        {state === "shared" ? "✓ Shared!" : state === "copied" ? "✓ Copied!" : "↗ Share"}
+      </button>
+
+      {/* Desktop social panel — shown when Web Share API unavailable */}
+      {state === "open" && (
+        <div style={{
+          position: "absolute", top: "calc(100% + 8px)", right: 0,
+          background: "white", border: "1px solid var(--border)",
+          borderRadius: 12, padding: "12px 14px", zIndex: 300,
+          boxShadow: "0 4px 20px rgba(26,22,18,0.12)",
+          minWidth: 220,
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 500, color: "var(--slate)", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 10 }}>
+            Share itinerary
+          </div>
+
+          {/* Social buttons */}
+          <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+            {SOCIALS.map(s => (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={s.label}
+                style={{
+                  width: 36, height: 36, borderRadius: 8,
+                  background: s.color, color: "white",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 14, fontWeight: 700, textDecoration: "none",
+                  flexShrink: 0, transition: "opacity .15s",
+                }}
+                onMouseEnter={e => e.currentTarget.style.opacity = ".82"}
+                onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+              >
+                {s.icon}
+              </a>
+            ))}
+          </div>
+
+          {/* Copy link row */}
+          <div style={{
+            display: "flex", alignItems: "center", gap: 6,
+            background: "var(--paper2)", borderRadius: 6, padding: "6px 8px",
+          }}>
+            <span style={{
+              flex: 1, fontSize: 11, color: "var(--slate)",
+              overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+            }}>{url.length > 42 ? url.slice(0, 42) + "…" : url}</span>
+            <button
+              onClick={copyLink}
+              style={{
+                padding: "4px 10px", borderRadius: 6, border: "1px solid var(--border)",
+                background: "white", fontSize: 11, cursor: "pointer",
+                fontFamily: "'DM Sans', sans-serif", color: "var(--slate)",
+                flexShrink: 0, whiteSpace: "nowrap",
+              }}
+            >
+              {state === "copied" ? "✓" : "Copy"}
+            </button>
+          </div>
+
+          {/* Close */}
+          <button
+            onClick={() => setState("idle")}
+            style={{
+              position: "absolute", top: 8, right: 10,
+              background: "none", border: "none", fontSize: 16,
+              cursor: "pointer", color: "var(--slate)", lineHeight: 1,
+            }}
+          >×</button>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -989,13 +1098,13 @@ export default function Home() {
         display: "flex", alignItems: "center", justifyContent: "space-between",
         height: 60, background: "white", position: "sticky", top: 0, zIndex: 100,
       }}>
-	  
-	  <div onClick={() => { setStep(1); setItinerary(null); setMeta(null); setIsSurprise(false); setUsedOrModel(""); }}
+         <div onClick={() => { setStep(1); setItinerary(null); setMeta(null); setIsSurprise(false); setUsedOrModel(""); }}
   style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
 		  <span style={{ fontSize: 22 }}>🧭</span>
 		  <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600 }}>TripPivotal</span>
 		  <span style={{ fontSize: 12, color: "var(--slate)", marginLeft: 4, fontStyle: "italic" }}>Smart planner</span>
 	</div>
+     
         <ModelPicker provider={provider} orModel={orModel} onProviderChange={setProvider} onOrModelChange={setOrModel} />
       </header>
 
